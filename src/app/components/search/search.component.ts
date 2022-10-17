@@ -48,6 +48,9 @@ export class SearchComponent implements OnInit {
   }
 
   selectArticle(){
+    /* this.articleSvc.getAll().subscribe(res => {
+      res.find()
+    }) */
     /* const title: any = this.myControl.value;
     this.articleSvc.getLocalArticleByTitle(title).subscribe({next: res => {
       this.oneArticle = res;

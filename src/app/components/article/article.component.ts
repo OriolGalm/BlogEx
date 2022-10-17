@@ -17,7 +17,7 @@ export class ArticleComponent implements OnInit {
 
   ngOnInit(): void {
     const idPost = this.route.snapshot.params['title'];   //snapshot.params['id'];
-    this.articleSvc.getArticle(idPost)
+    this.articleSvc.getLocalArticleByTitle(idPost)
     .subscribe(data => this.post = data);
     console.log("Post: ", idPost);
   }

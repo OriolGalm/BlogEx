@@ -58,9 +58,13 @@ export class ListPostsComponent implements OnInit {
   }
   
   //Send all the post
-  onEdit(post: Article){
+  async onEditWait(post: Article){
     this.navigationExtras.state = post;
-    this.router.navigate(['/admin/edit'], this.navigationExtras);
+    await this.router.navigate(['/admin/edit'], this.navigationExtras);
+  }
+
+  onEdit(post: Article){
+    this.onEditWait(post);
   }
 
   onDelete(post: any){
