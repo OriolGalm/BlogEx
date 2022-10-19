@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Article } from 'src/app/shared/models/article';
 import { ArticleService } from 'src/app/shared/services/article.service';
 
@@ -21,7 +22,8 @@ export class EditComponent implements OnInit {
 
   constructor(private readonly fBuilder: FormBuilder,
     private readonly router: Router,
-    private readonly articleSvc: ArticleService) { 
+    private readonly articleSvc: ArticleService,
+    private readonly toastr: ToastrService) { 
       const navigation = router.getCurrentNavigation();
       this.article = navigation?.extras?.state;
       this.reload();
@@ -54,6 +56,7 @@ export class EditComponent implements OnInit {
 
   private initForm():void{
     this.editPostForm = this.fBuilder.group({
+      id:['', Validators.required],
       title:['', Validators.required],
       img1:['', Validators.required],
       alt1:['', Validators.required],
@@ -83,9 +86,16 @@ export class EditComponent implements OnInit {
   }
 
   editPost(post: Article){
-    if(this.image === this.imageOriginal){
-      this.article.imatge1 = this.imageOriginal;
-      this.articleSvc.updateArticle(post.id, post);
+    //this.image === this.imageOriginal
+    if(post.title){
+      //this.article.imatge1 = this.imageOriginal;
+      console.log("ID: ", post);
+      this.articleSvc.updateArticle(post.id, post).subscribe({
+        next: data => {
+          this.toastr.success(data.mensaje, '', {
+            timeOut: 3000, positionClass: 'toast-top-center',
+          })}
+      })
     }
   }
 
