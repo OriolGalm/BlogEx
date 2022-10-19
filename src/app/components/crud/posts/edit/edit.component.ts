@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Article } from 'src/app/shared/models/article';
+import { ArticleService } from 'src/app/shared/services/article.service';
 
 @Component({
   selector: 'app-edit',
@@ -19,7 +20,8 @@ export class EditComponent implements OnInit {
   public imageOriginal: any;
 
   constructor(private readonly fBuilder: FormBuilder,
-    private readonly router: Router) { 
+    private readonly router: Router,
+    private readonly articleSvc: ArticleService) { 
       const navigation = router.getCurrentNavigation();
       this.article = navigation?.extras?.state;
       this.reload();
@@ -80,8 +82,15 @@ export class EditComponent implements OnInit {
     }
   }
 
-  editPost(post: Article){}
+  editPost(post: Article){
+    if(this.image === this.imageOriginal){
+      this.article.imatge1 = this.imageOriginal;
+      this.articleSvc.updateArticle(post.id, post);
+    }
+  }
 
-  handleImage1(image:any){}
+  handleImage1(event:any): void{
+    this.image = event.target.files[0];
+  }
 
 }
