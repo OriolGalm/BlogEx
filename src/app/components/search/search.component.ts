@@ -21,7 +21,7 @@ export class SearchComponent implements OnInit {
 
   @ViewChild('hideForm') toForm!: ElementRef;
 
-  myControl = this.fb.control('', [Validators.minLength(3), Validators.required]);
+  myControl = this.fb.control('', [Validators.minLength(2), Validators.required]);
   options: string[] = [];
   allOptions: Article[] = [];
   filteredOptions!: Observable<string[]>;
@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit {
   articleId!: number;
   mostrar: boolean = false;
   private debounceTimer!: any;
+  private uniqueChars: string[] = [];
 
   constructor(private readonly articleSvc: ArticleService, 
     private readonly router: Router,
@@ -40,20 +41,10 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
       
     this.filteredOptions = this.myControl.valueChanges.pipe(
-      debounceTime(400),
+      //debounceTime(400),
       startWith(''),
       map(value => this._filter(value || '')),
     );
-
-    if(this.myControl.valid){
-      this.articleSvc.getAll()
-      .subscribe(res => {
-        this.allOptions = res;
-        this.allOptions.map(x =>{ this.options.push(x.title);
-        });
-      });
-    }                                     
-
   }
 
  /*  onQueryChanged(query: string = ''){
@@ -67,13 +58,21 @@ export class SearchComponent implements OnInit {
         });
       });
     }, 500)
-
   } */
 
   private _filter(value: string): string[] {
-    //console.log("Control: ", this.myControl.status);
     const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    
+    if(this.myControl.valid){
+      this.articleSvc.getAll()
+      .subscribe(res => {
+        this.allOptions = res;
+        this.allOptions.map(x =>{ this.options.push(x.title);
+          this.uniqueChars = [...new Set(this.options)];
+        });
+      });
+    }
+    return this.uniqueChars.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   selectArticle(){
